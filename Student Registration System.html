@@ -1,445 +1,1190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Attendance System</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Student Registration System</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#eef2f7;padding:25px}
-.page-header{text-align:center;margin-bottom:30px}
-.page-header h1{color:#1565c0}
-.section{margin-bottom:30px}
-.section h2{color:#333;margin-bottom:12px}
-.card-form,.box{background:#fff;padding:25px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,.12)}
-input,select{width:100%;padding:12px;margin-bottom:15px;border:1px solid #ccc;border-radius:8px;font-size:15px}
-label{display:block;margin-bottom:6px;font-size:14px;color:#555;font-weight:bold}
-.btn-row{display:flex;gap:10px;flex-wrap:wrap}
-button{padding:12px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;background:#1565c0;color:#fff}
-.btn-cancel,.delete-btn{background:#d63031}
-table{width:100%;border-collapse:collapse;margin-top:10px}
-th,td{padding:12px;border-bottom:1px solid #ddd;text-align:center;font-size:14px}
-th{background:#1565c0;color:#fff}
-.delete-btn{padding:8px 12px;font-size:13px}
-.report-box{display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
-.circle{width:190px;height:190px;border-radius:50%;display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff}
-.green-circle{background:linear-gradient(#2ecc71,#27ae60)}
-.red-circle{background:linear-gradient(#ff4d4d,#d63031)}
-.circle h1{font-size:55px}
-.circle p{font-size:18px;font-weight:bold}
-.empty{text-align:center;padding:20px;color:gray}
-.tab-menu{display:flex;justify-content:center;gap:12px;margin-bottom:30px}
-.tab-menu button{padding:10px 18px;border:none;border-radius:10px;cursor:pointer;background:#fff;color:#1565c0;font-weight:bold;box-shadow:0 4px 10px rgba(0,0,0,.08)}
-.tab-menu button.active{background:#1565c0;color:#fff}
-.nav-link{display:none}
-.present{color:#27ae60;font-weight:bold}
-.absent{color:#d63031;font-weight:bold}
-.hint{font-size:13px;color:#666;margin-bottom:12px}
-.msg{padding:10px 12px;border-radius:8px;margin-top:12px;display:none;font-size:14px}
-.msg-ok{background:#eafff0;color:#1e8449;border:1px solid #a9dfbf;display:block}
-.msg-err{background:#ffeaea;color:#c0392b;border:1px solid #ffb3b3;display:block}
+:root {
+  --bg: #0f1117;
+  --bg2: #161820;
+  --bg3: #1e2030;
+  --surface: #252840;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.14);
+  --blue: #4f8ef7;
+  --blue2: #3a7de0;
+  --teal: #38d9c0;
+  --red: #f45b69;
+  --yellow: #f9c74f;
+  --green: #43d98c;
+  --text: #f0f0f8;
+  --muted: #8888aa;
+  --muted2: #b8b8cc;
+  --serif: 'Syne', sans-serif;
+  --sans: 'DM Sans', sans-serif;
+  --radius: 14px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.35);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* BG DECORATION */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 600px 400px at 10% 10%, rgba(79,142,247,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 400px at 90% 80%, rgba(56,217,192,0.05) 0%, transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── HEADER ── */
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(15,17,23,0.92);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  padding:1rem 2.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:1rem;
+}
+.logo{
+  font-family:var(--serif);
+  font-size:1.45rem;font-weight:800;
+  color:var(--text);
+  display:flex;align-items:center;gap:0.6rem;
+}
+.logo-dot{color:var(--blue);}
+.header-stats{
+  display:flex;gap:2rem;
+}
+.hstat{text-align:center;}
+.hstat-num{
+  font-family:var(--serif);
+  font-size:1.3rem;font-weight:800;color:var(--blue);
+  line-height:1;
+}
+.hstat-lbl{font-size:0.72rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;}
+
+/* ── LAYOUT ── */
+.app{
+  max-width:1350px;margin:0 auto;
+  padding:2.5rem 2rem;
+  display:grid;
+  grid-template-columns:380px 1fr;
+  gap:2rem;
+  position:relative;z-index:1;
+}
+
+/* ── PANEL (FORM) ── */
+.panel{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:2rem;
+  position:sticky;top:80px;
+  align-self:start;
+  box-shadow:var(--shadow);
+}
+.panel-title{
+  font-family:var(--serif);
+  font-size:1.3rem;font-weight:800;
+  margin-bottom:0.3rem;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.panel-title .icon{font-size:1.2rem;}
+.panel-sub{font-size:0.82rem;color:var(--muted);margin-bottom:1.8rem;}
+
+.form-grid{display:flex;flex-direction:column;gap:1.1rem;}
+
+.field{display:flex;flex-direction:column;gap:0.35rem;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+
+label{
+  font-size:0.75rem;font-weight:600;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted2);
+}
+input,select,textarea{
+  background:var(--bg3);
+  border:1.5px solid var(--border);
+  border-radius:9px;
+  color:var(--text);
+  font-family:var(--sans);font-size:0.9rem;
+  padding:0.7rem 0.95rem;
+  outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+  width:100%;
+}
+input::placeholder,textarea::placeholder{color:var(--muted);}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(79,142,247,0.13);
+}
+select option{background:var(--bg3);}
+textarea{resize:vertical;min-height:72px;}
+
+.input-error{border-color:var(--red)!important;}
+.field-hint{font-size:0.72rem;color:var(--red);display:none;}
+.field-hint.show{display:block;}
+.attendance-hint{display:block;font-size:0.82rem;color:var(--muted2);min-height:1.2rem;margin-top:0.35rem;}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:0.45rem;
+  padding:0.75rem 1.5rem;border-radius:9px;
+  font-family:var(--sans);font-size:0.88rem;font-weight:600;
+  border:none;cursor:pointer;transition:all 0.2s;
+  letter-spacing:0.02em;
+}
+.btn-primary{background:var(--blue);color:#fff;}
+.btn-primary:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(79,142,247,0.3);}
+.btn-outline{background:transparent;color:var(--muted2);border:1.5px solid var(--border2);}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue);}
+.btn-danger{background:transparent;color:var(--red);border:1.5px solid rgba(244,91,105,0.3);}
+.btn-danger:hover{background:rgba(244,91,105,0.1);border-color:var(--red);}
+.btn-success{background:var(--green);color:#0f1117;}
+.btn-success:hover{opacity:0.88;transform:translateY(-1px);}
+.btn-full{width:100%;}
+.btn-sm{padding:0.4rem 0.85rem;font-size:0.78rem;border-radius:7px;}
+
+.form-actions{display:flex;gap:0.75rem;margin-top:0.5rem;}
+
+/* ── RIGHT PANEL ── */
+.main{}
+
+/* SEARCH & FILTER BAR */
+.toolbar{
+  display:flex;gap:0.85rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center;
+}
+.search-wrap{
+  flex:1;position:relative;min-width:200px;
+}
+.search-wrap input{
+  padding-left:2.6rem;
+}
+.search-icon{
+  position:absolute;left:0.9rem;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-size:1rem;pointer-events:none;
+}
+.filter-select{
+  width:auto;padding:0.7rem 1rem;min-width:130px;
+}
+.sort-btn{
+  background:var(--bg2);border:1.5px solid var(--border2);
+  color:var(--muted2);border-radius:9px;padding:0.7rem 1rem;
+  font-family:var(--sans);font-size:0.85rem;cursor:pointer;
+  transition:all 0.2s;white-space:nowrap;
+}
+.sort-btn:hover{border-color:var(--blue);color:var(--blue);}
+.sort-btn.active{background:rgba(79,142,247,0.12);border-color:var(--blue);color:var(--blue);}
+
+/* STATS CARDS */
+.stat-cards{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;
+  margin-bottom:1.5rem;
+}
+.stat-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:1.2rem;
+  display:flex;align-items:center;gap:1rem;
+  transition:border-color 0.2s;
+}
+.stat-card:hover{border-color:var(--border2);}
+.stat-card-icon{
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;flex-shrink:0;
+}
+.stat-card-icon.blue{background:rgba(79,142,247,0.15);}
+.stat-card-icon.teal{background:rgba(56,217,192,0.12);}
+.stat-card-icon.yellow{background:rgba(249,199,79,0.12);}
+.stat-card-icon.red{background:rgba(244,91,105,0.12);}
+.stat-card-val{
+  font-family:var(--serif);font-size:1.5rem;font-weight:800;
+  line-height:1;
+}
+.stat-card-lbl{font-size:0.73rem;color:var(--muted);margin-top:0.15rem;}
+
+/* TABLE */
+.table-wrap{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.attendance-panel{position:static;}
+.attendance-form-grid{display:grid;grid-template-columns:repeat(3,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.info-row{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;margin:1.5rem 0;}
+.info-item{color:var(--muted);font-size:0.95rem;}
+.status-badge{display:inline-flex;padding:0.3rem 0.75rem;border-radius:999px;font-size:0.78rem;font-weight:700;}
+.present{background:rgba(56,217,192,0.15);color:var(--teal);}
+.absent{background:rgba(244,91,105,0.15);color:var(--red);}
+.late{background:rgba(249,199,79,0.18);color:var(--yellow);}
+.action-btn{background:transparent;color:var(--muted);border:1.5px solid var(--border);padding:0.65rem 0.9rem;border-radius:9px;cursor:pointer;}
+.action-btn:hover{border-color:var(--blue);color:var(--blue);}
+.attendance-section{margin-top:2rem;}
+@media(max-width:860px){.attendance-form-grid{grid-template-columns:1fr;}}
+.table-header{
+  padding:1.2rem 1.5rem;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:1rem;
+}
+.table-title{font-family:var(--serif);font-size:1rem;font-weight:700;}
+.table-count{
+  background:rgba(79,142,247,0.15);color:var(--blue);
+  font-size:0.75rem;font-weight:700;
+  padding:0.2rem 0.7rem;border-radius:100px;
+}
+
+table{width:100%;border-collapse:collapse;}
+thead tr{border-bottom:1px solid var(--border);}
+thead th{
+  padding:0.9rem 1.2rem;
+  text-align:left;
+  font-size:0.72rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted);
+  white-space:nowrap;
+  cursor:pointer;user-select:none;
+}
+thead th:hover{color:var(--blue);}
+thead th .sort-arrow{opacity:0.4;margin-left:0.3rem;font-size:0.75rem;}
+thead th.sorted .sort-arrow{opacity:1;color:var(--blue);}
+
+tbody tr{
+  border-bottom:1px solid var(--border);
+  transition:background 0.15s;
+}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:rgba(255,255,255,0.03);}
+tbody td{padding:0.95rem 1.2rem;font-size:0.87rem;vertical-align:middle;}
+
+.avatar{
+  width:36px;height:36px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:0.85rem;font-weight:700;
+  flex-shrink:0;
+}
+.student-cell{display:flex;align-items:center;gap:0.75rem;}
+.student-name{font-weight:600;font-size:0.9rem;}
+.student-id{font-size:0.72rem;color:var(--muted);}
+
+.badge{
+  display:inline-block;
+  padding:0.2rem 0.65rem;border-radius:100px;
+  font-size:0.72rem;font-weight:700;letter-spacing:0.04em;
+}
+.badge-blue{background:rgba(79,142,247,0.15);color:var(--blue);}
+.badge-teal{background:rgba(56,217,192,0.12);color:var(--teal);}
+.badge-yellow{background:rgba(249,199,79,0.12);color:var(--yellow);}
+.badge-red{background:rgba(244,91,105,0.12);color:var(--red);}
+.badge-green{background:rgba(67,217,140,0.12);color:var(--green);}
+
+.actions-cell{display:flex;gap:0.4rem;align-items:center;}
+
+/* EMPTY STATE */
+.empty-state{
+  text-align:center;padding:4rem 2rem;color:var(--muted);
+}
+.empty-icon{font-size:3.5rem;margin-bottom:1rem;opacity:0.5;}
+.empty-title{font-family:var(--serif);font-size:1.1rem;margin-bottom:0.4rem;color:var(--muted2);}
+.empty-sub{font-size:0.85rem;}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;padding:2rem;
+  opacity:0;pointer-events:none;transition:opacity 0.25s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:18px;padding:2rem;
+  max-width:440px;width:100%;
+  transform:translateY(20px);transition:transform 0.25s;
+  box-shadow:0 24px 64px rgba(0,0,0,0.5);
+}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-title{font-family:var(--serif);font-size:1.15rem;font-weight:800;margin-bottom:0.5rem;}
+.modal-sub{font-size:0.85rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.6;}
+.modal-highlight{
+  background:rgba(244,91,105,0.1);border:1px solid rgba(244,91,105,0.2);
+  border-radius:8px;padding:0.7rem 1rem;font-size:0.88rem;
+  color:var(--text);margin-bottom:1.5rem;font-weight:500;
+}
+.modal-actions{display:flex;gap:0.75rem;justify-content:flex-end;}
+
+/* TOAST */
+.toast-container{
+  position:fixed;bottom:2rem;right:2rem;z-index:600;
+  display:flex;flex-direction:column;gap:0.6rem;
+}
+.toast{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:10px;padding:0.85rem 1.2rem;
+  font-size:0.87rem;font-weight:500;
+  box-shadow:var(--shadow);
+  display:flex;align-items:center;gap:0.6rem;
+  animation:toastIn 0.3s ease;max-width:320px;
+}
+.toast.success{border-left:3px solid var(--green);}
+.toast.error{border-left:3px solid var(--red);}
+.toast.info{border-left:3px solid var(--blue);}
+@keyframes toastIn{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
+
+/* EDIT MODE */
+.edit-mode-banner{
+  display:none;background:rgba(249,199,79,0.1);
+  border:1px solid rgba(249,199,79,0.25);
+  border-radius:10px;padding:0.75rem 1rem;
+  font-size:0.83rem;color:var(--yellow);
+  margin-bottom:1.2rem;align-items:center;gap:0.5rem;
+}
+.edit-mode-banner.show{display:flex;}
+
+/* PAGINATION */
+.pagination{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 1.5rem;border-top:1px solid var(--border);
+  font-size:0.82rem;color:var(--muted);flex-wrap:wrap;gap:0.5rem;
+}
+.page-btns{display:flex;gap:0.35rem;}
+.page-btn{
+  width:32px;height:32px;border-radius:7px;
+  background:transparent;border:1.5px solid var(--border);
+  color:var(--muted2);font-family:var(--sans);font-size:0.82rem;
+  cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;
+}
+.page-btn:hover{border-color:var(--blue);color:var(--blue);}
+.page-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.page-btn:disabled{opacity:0.35;cursor:not-allowed;}
+
+/* HIGHLIGHT */
+mark{background:rgba(79,142,247,0.25);color:var(--blue);border-radius:3px;padding:0 2px;}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .app{grid-template-columns:1fr;}
+  .panel{position:static;}
+  .stat-cards{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:600px){
+  header{padding:1rem;}
+  .header-stats{gap:1rem;}
+  .app{padding:1.2rem 1rem;}
+  .stat-cards{grid-template-columns:1fr 1fr;}
+  .field-row{grid-template-columns:1fr;}
+  table{font-size:0.82rem;}
+  tbody td{padding:0.75rem 0.85rem;}
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.panel{animation:fadeUp 0.5s ease;}
+.main{animation:fadeUp 0.5s 0.1s ease both;}
 </style>
 </head>
 <body>
 
-<header class="page-header">
-<h1>Student Registration & Attendance</h1>
+<!-- HEADER -->
+<header>
+  <div class="logo">🎓 <span>Student Registration<span class="logo-dot">.</span></span></div>
+  <div class="header-stats">
+    <div class="hstat"><div class="hstat-num" id="hTotal">0</div><div class="hstat-lbl">Students</div></div>
+    <div class="hstat"><div class="hstat-num" id="hMale">0</div><div class="hstat-lbl">Male</div></div>
+    <div class="hstat"><div class="hstat-num" id="hFemale">0</div><div class="hstat-lbl">Female</div></div>
+  </div>
 </header>
-<div class="tab-menu">
-<button id="tab-attendance" class="active" type="button">Attendance</button>
-<button id="tab-register" type="button">Register Student</button>
+
+<!-- APP -->
+<div class="app">
+
+  <!-- LEFT: FORM -->
+  <aside class="panel">
+    <div class="edit-mode-banner" id="editBanner">
+      ✏️ <span>Editing student record — make your changes and save</span>
+    </div>
+    <div class="panel-title"><span class="icon">📋</span> <span id="formTitle">Add New Student</span></div>
+    <p class="panel-sub" id="formSub">Fill in all required fields to register a student.</p>
+
+    <form class="form-grid" id="studentForm" novalidate>
+      <input type="hidden" id="editId"/>
+
+      <div class="field-row">
+        <div class="field">
+          <label>First Name *</label>
+          <input type="text" id="firstName" placeholder="Ahmed"/>
+          <span class="field-hint" id="err-firstName">Required field</span>
+        </div>
+        <div class="field">
+          <label>Last Name *</label>
+          <input type="text" id="lastName" placeholder="Mohamed"/>
+          <span class="field-hint" id="err-lastName">Required field</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Student ID *</label>
+        <input type="text" id="studentId" placeholder="e.g. STU-2024-001"/>
+        <span class="field-hint" id="err-studentId">Required & must be unique</span>
+      </div>
+
+      <div class="field">
+        <label>Email Address *</label>
+        <input type="email" id="email" placeholder="student@example.com"/>
+        <span class="field-hint" id="err-email">Enter a valid email</span>
+      </div>
+
+      <div class="field">
+        <label>Phone Number</label>
+        <input type="tel" id="phone" placeholder="+252 63 4000000"/>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Gender *</label>
+          <select id="gender">
+            <option value="">Select…</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+          <span class="field-hint" id="err-gender">Required field</span>
+        </div>
+        <div class="field">
+          <label>Date of Birth</label>
+          <input type="date" id="dob"/>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Department *</label>
+          <select id="department">
+            <option value="">Select…</option>
+            <option>Computer Science</option>
+            <option>Engineering</option>
+            <option>Business</option>
+            <option>Medicine</option>
+            <option>Law</option>
+            <option>Arts & Humanities</option>
+            <option>Mathematics</option>
+            <option>Education</option>
+          </select>
+          <span class="field-hint" id="err-department">Required field</span>
+        </div>
+        <div class="field">
+          <label>Year / Level *</label>
+          <select id="year">
+            <option value="">Select…</option>
+            <option>Year 1</option>
+            <option>Year 2</option>
+            <option>Year 3</option>
+            <option>Year 4</option>
+            <option>Postgraduate</option>
+          </select>
+          <span class="field-hint" id="err-year">Required field</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Address / Notes</label>
+        <textarea id="address" placeholder="City, neighborhood or any notes…"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
+          ➕ Register Student
+        </button>
+        <button type="button" class="btn btn-outline" id="cancelBtn" style="display:none" onclick="cancelEdit()">✕</button>
+      </div>
+    </form>
+  </aside>
+
+  <!-- RIGHT: RECORDS -->
+  <main class="main">
+
+    <!-- STAT CARDS -->
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-card-icon blue">🎓</div>
+        <div><div class="stat-card-val" id="scTotal">0</div><div class="stat-card-lbl">Total Students</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon yellow">📚</div>
+        <div><div class="stat-card-val" id="scDepts">0</div><div class="stat-card-lbl">Departments</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon teal">🆕</div>
+        <div><div class="stat-card-val" id="scNew">0</div><div class="stat-card-lbl">This Month</div></div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search by name, ID, email, department…"/>
+      </div>
+      <select class="filter-select" id="filterDept">
+        <option value="">All Departments</option>
+        <option>Computer Science</option>
+        <option>Engineering</option>
+        <option>Business</option>
+        <option>Medicine</option>
+        <option>Law</option>
+        <option>Arts & Humanities</option>
+        <option>Mathematics</option>
+        <option>Education</option>
+      </select>
+      <select class="filter-select" id="filterGender">
+        <option value="">All Gender</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <!-- TABLE -->
+    <div class="section-switcher" style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <button class="sort-btn active" id="showStudentsBtn" type="button" onclick="showSection('students')">Students</button>
+      <button class="sort-btn" id="showAttendanceBtn" type="button" onclick="showSection('attendance')">Attendance</button>
+    </div>
+
+    <div id="studentSection">
+      <div class="table-wrap">
+        <div class="table-header">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <span class="table-title">Student Records</span>
+          <span class="table-count" id="tableCount">0</span>
+        </div>
+        <div style="display:flex;gap:0.5rem;">
+          <button class="sort-btn" onclick="toggleView('table')" id="viewTable">☰ Table</button>
+          <button class="sort-btn" onclick="toggleView('grid')" id="viewGrid">⊞ Grid</button>
+        </div>
+      </div>
+
+      <div id="tableContainer">
+        <table id="studentTable">
+          <thead>
+            <tr>
+              <th onclick="sortBy('name')">Student <span class="sort-arrow">↕</span></th>
+              <th onclick="sortBy('studentId')">ID <span class="sort-arrow">↕</span></th>
+              <th onclick="sortBy('department')">Department <span class="sort-arrow">↕</span></th>
+              <th onclick="sortBy('year')">Year <span class="sort-arrow">↕</span></th>
+              <th onclick="sortBy('gender')">Gender <span class="sort-arrow">↕</span></th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+        <div id="emptyState" class="empty-state" style="display:none">
+          <div class="empty-icon">🎓</div>
+          <div class="empty-title">No students found</div>
+          <div class="empty-sub">Try adjusting your search or filters, or add a new student.</div>
+        </div>
+      </div>
+
+      <div class="pagination">
+        <span id="pageInfo">Showing 0–0 of 0</span>
+        <div class="page-btns" id="pageBtns"></div>
+      </div>
+    </div>
+
+    <div id="attendanceSection" class="attendance-section" style="display:none;">
+      <div class="panel attendance-panel">
+        <div class="panel-title"><span class="icon">📝</span> Attendance Tracker</div>
+        <p class="panel-sub">Record daily student attendance and status.</p>
+        <form id="attendanceForm" class="form-grid" novalidate>
+          <div class="attendance-form-grid">
+            <div class="field">
+              <label>Date</label>
+              <input type="date" id="attendanceDate" />
+            </div>
+            <div class="field">
+              <label>Student ID</label>
+              <input type="text" id="attendanceStudentId" placeholder="STU-2024-001" />
+              <span class="attendance-hint" id="attendanceNameHint"></span>
+            </div>
+            <div class="field">
+              <label>Status</label>
+              <select id="attendanceStatus">
+                <option value="Present">Present</option>
+                <option value="Absent">Absent</option>
+                <option value="Late">Late</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" id="attendanceSubmitBtn" class="btn btn-primary btn-full">Save Attendance</button>
+        </form>
+      </div>
+
+      <div class="attendance-toolbar toolbar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="attendanceSearch" placeholder="Search attendance by student or ID…" />
+        </div>
+        <input type="date" id="attendanceFilterDate" class="filter-select" />
+        <select class="filter-select" id="attendanceFilterStatus">
+          <option value="">All Status</option>
+          <option>Present</option>
+          <option>Absent</option>
+          <option>Late</option>
+        </select>
+        <input type="text" id="attendanceFilterId" class="filter-select" placeholder="Filter by student ID" />
+      </div>
+
+      <div class="info-row">
+        <div class="info-item">Total records: <strong id="recordCount">0</strong></div>
+        <div class="info-item">Present: <strong id="presentCount">0</strong></div>
+        <div class="info-item">Absent: <strong id="absentCount">0</strong></div>
+        <div class="info-item">Late: <strong id="lateCount">0</strong></div>
+        <div class="info-item">Last saved: <strong id="lastSaved">—</strong></div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-header">
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <span class="table-title">Attendance Log</span>
+            <span class="table-count" id="attendanceCount">0</span>
+          </div>
+        </div>
+        <table id="attendanceTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Student</th>
+              <th>ID</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="attendanceBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
 </div>
 
-<section id="attendance-section" class="section">
-<h2>Add Attendance</h2>
-<div class="card-form">
-<p class="hint">Select student from list OR type ID, Name, Class. Then choose Present/Absent and Submit.</p>
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-title">🗑️ Delete Student?</div>
+    <p class="modal-sub">This action cannot be undone. The following student record will be permanently removed:</p>
+    <div class="modal-highlight" id="deleteTarget"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">Delete Permanently</button>
+    </div>
+  </div>
+</div>
 
-<label for="student_select">Select Student (optional)</label>
-<select id="student_select" onchange="pickStudent()">
-<option value="">-- Select or type below --</option>
-</select>
-
-<input type="text" id="student_id" placeholder="Student ID">
-<input type="text" id="student_name" placeholder="Full Name (e.g. Ali Hassan)">
-<input type="text" id="student_class" placeholder="Class">
-
-<select id="status">
-<option value="">Select Status</option>
-<option value="Present">Present</option>
-<option value="Absent">Absent</option>
-</select>
-
-<label for="date">Date (today only)</label>
-<input type="date" id="date" readonly>
-
-<div class="btn-row">
-<button type="button" id="btn-save" onclick="saveAttendance()">Submit</button>
-<button type="button" id="btn-cancel" class="btn-cancel" onclick="clearAttendanceForm()">Cancel</button>
-</div>
-</div>
-</section>
-
-<section id="register-section" class="section" style="display:none;">
-<h2>Register New Student</h2>
-<div class="card-form">
-<input type="text" id="reg_id" placeholder="Student ID">
-<input type="text" id="reg_name" placeholder="Full Name (e.g. Ali Hassan)">
-<input type="text" id="reg_class" placeholder="Class">
-<div class="btn-row">
-<button class="primary" type="button" id="btn-reg-save">Submit</button>
-<button class="secondary" type="button" id="btn-reg-cancel">Cancel</button>
-</div>
-<div id="reg-msg" class="msg"></div>
-</div>
-</section>
-
-<section class="section">
-<h2>Registered Students</h2>
-<div class="box">
-<table>
-<thead>
-<tr>
-<th>Student ID</th>
-<th>Name</th>
-<th>Class</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody id="students-body"></tbody>
-</table>
-<p id="no-students" class="empty">No students registered yet.</p>
-</div>
-</section>
-
-<section class="section">
-<h2>Attendance Records</h2>
-<div class="box">
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Class</th>
-<th>Status</th>
-<th>Date</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody id="records-body"></tbody>
-</table>
-<p id="no-records" class="empty">No records yet.</p>
-</div>
-</section>
-
-<section class="section">
-<h2>Today's Attendance Report</h2>
-<div class="box">
-<div class="report-box">
-<div class="circle green-circle">
-<h1 id="present-count">0</h1>
-<p>Present Students</p>
-</div>
-<div class="circle red-circle">
-<h1 id="absent-count">0</h1>
-<p>Absent Students</p>
-</div>
-</div>
-</div>
-</section>
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
 
 <script>
-var STUDENTS_KEY = "registered_students";
-var ATT_KEY = "attendance_records";
+// ── STATE ──
+let students = JSON.parse(localStorage.getItem('eduStudents') || '[]');
+let deleteTargetId = null;
+let editingId = null;
+let sortKey = 'name';
+let sortAsc = true;
+let currentPage = 1;
+const PER_PAGE = 10;
+let viewMode = 'table';
+let attendanceEditIndex = null;
+let attendanceRecords = JSON.parse(localStorage.getItem('attendanceRecords') || '[]');
+const attendanceDate = document.getElementById('attendanceDate');
+const attendanceStudentId = document.getElementById('attendanceStudentId');
+const attendanceStatus = document.getElementById('attendanceStatus');
+const attendanceBody = document.getElementById('attendanceBody');
+const recordCount = document.getElementById('recordCount');
+const lastSaved = document.getElementById('lastSaved');
+const attendanceCount = document.getElementById('attendanceCount');
+const presentCount = document.getElementById('presentCount');
+const absentCount = document.getElementById('absentCount');
+const lateCount = document.getElementById('lateCount');
+const attendanceForm = document.getElementById('attendanceForm');
+const attendanceSubmitBtn = document.getElementById('attendanceSubmitBtn');
+const attendanceNameHint = document.getElementById('attendanceNameHint');
+const attendanceSearch = document.getElementById('attendanceSearch');
+const attendanceFilterDate = document.getElementById('attendanceFilterDate');
+const attendanceFilterStatus = document.getElementById('attendanceFilterStatus');
+const attendanceFilterId = document.getElementById('attendanceFilterId');
 
-function pad2(n) {
-  return n < 10 ? "0" + n : "" + n;
-}
+// ── AVATAR COLORS ──
+const COLORS = [
+  ['#4f8ef7','#1a2a4f'],['#38d9c0','#0f2e2b'],['#f9c74f','#2e250f'],
+  ['#f45b69','#2e0f13'],['#a78bfa','#1e0f2e'],['#fb923c','#2e1a0f'],
+];
+function avatarColor(name){const i=(name.charCodeAt(0)+name.charCodeAt(1||0))%COLORS.length;return COLORS[i];}
 
-function getToday() {
-  var d = new Date();
-  return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
-}
+function initials(f,l){return((f[0]||'')+(l[0]||'')).toUpperCase();}
 
-function loadStudents() {
-  try {
-    var raw = localStorage.getItem(STUDENTS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) {
-    return [];
-  }
-}
+// ── FILTERS ──
+function getFiltered(){
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  const dept=document.getElementById('filterDept').value;
+  const gender=document.getElementById('filterGender').value;
 
-function saveStudents(list) {
-  localStorage.setItem(STUDENTS_KEY, JSON.stringify(list));
-}
-
-function loadRecords() {
-  try {
-    var raw = localStorage.getItem(ATT_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) {
-    return [];
-  }
-}
-
-function saveRecords(list) {
-  localStorage.setItem(ATT_KEY, JSON.stringify(list));
-}
-
-function getClassName(s) {
-  return s.student_class || s.class || "";
-}
-
-function loadDropdown() {
-  var sel = document.getElementById("student_select");
-  var list = loadStudents();
-  sel.innerHTML = '<option value="">-- Select or type below --</option>';
-  for (var i = 0; i < list.length; i++) {
-    var s = list[i];
-    var opt = document.createElement("option");
-    opt.value = i;
-    opt.textContent = s.student_id + " - " + s.name + " (" + getClassName(s) + ")";
-    sel.appendChild(opt);
-  }
-}
-
-function pickStudent() {
-  var sel = document.getElementById("student_select");
-  if (sel.value === "") return;
-  var s = loadStudents()[parseInt(sel.value, 10)];
-  if (!s) return;
-  document.getElementById("student_id").value = s.student_id;
-  document.getElementById("student_name").value = s.name;
-  document.getElementById("student_class").value = getClassName(s);
-}
-
-function updateReport() {
-  var rows = document.getElementById("records-body").getElementsByTagName("tr");
-  var present = 0;
-  var absent = 0;
-  for (var i = 0; i < rows.length; i++) {
-    var stat = rows[i].cells[3].textContent;
-    if (stat.indexOf("Present") !== -1) present++;
-    if (stat.indexOf("Absent") !== -1) absent++;
-  }
-  document.getElementById("present-count").textContent = present;
-  document.getElementById("absent-count").textContent = absent;
-}
-
-function renderTable() {
-  var list = loadRecords();
-  var body = document.getElementById("records-body");
-  var noRec = document.getElementById("no-records");
-  body.innerHTML = "";
-
-  if (list.length === 0) {
-    noRec.style.display = "block";
-    updateReport();
-    return;
-  }
-
-  noRec.style.display = "none";
-
-  for (var i = list.length - 1; i >= 0; i--) {
-    var r = list[i];
-    var row = body.insertRow();
-    var stClass = r.status === "Present" ? "present" : "absent";
-    row.innerHTML =
-      "<td>" + r.student_id + "</td>" +
-      "<td>" + r.student_name + "</td>" +
-      "<td>" + r.student_class + "</td>" +
-      '<td class="' + stClass + '">' + r.status + "</td>" +
-      "<td>" + r.date + "</td>" +
-      '<td><button type="button" class="delete-btn" onclick="deleteRecord(' + r.id + ')">Delete</button></td>';
-  }
-
-  updateReport();
-}
-
-function saveAttendance() {
-  var id = document.getElementById("student_id").value.trim();
-  var name = document.getElementById("student_name").value.trim();
-  var cls = document.getElementById("student_class").value.trim();
-  var stat = document.getElementById("status").value;
-  var date = document.getElementById("date").value;
-  var today = getToday();
-
-  if (!id || !name || !cls || !stat) {
-    alert("Please fill: Student ID, Full Name, Class, and Status.");
-    return;
-  }
-
-  if (name.split(/\s+/).filter(Boolean).length < 2) {
-    alert("Full name must have at least 2 words (e.g. Ali Hassan).");
-    return;
-  }
-
-  if (date !== today) {
-    document.getElementById("date").value = today;
-    alert("Date set to today: " + today);
-    date = today;
-  }
-
-  var list = loadRecords();
-  for (var j = 0; j < list.length; j++) {
-    if (list[j].student_id === id && list[j].date === date) {
-      if (!confirm("This student already has attendance today. Add again anyway?")) {
-        return;
-      }
-      break;
-    }
-  }
-
-  var record = {
-    id: new Date().getTime(),
-    student_id: id,
-    student_name: name,
-    student_class: cls,
-    status: stat,
-    date: date
-  };
-
-  try {
-    list.push(record);
-    saveRecords(list);
-  } catch (e) {
-    alert("Could not save. Open files from same folder in browser.");
-    return;
-  }
-
-  renderTable();
-  alert("Attendance saved!\n\nID: " + id + "\nName: " + name + "\nStatus: " + stat);
-}
-
-function deleteRecord(rid) {
-  if (!confirm("Delete this record?")) return;
-  var list = loadRecords();
-  var newList = [];
-  for (var i = 0; i < list.length; i++) {
-    if (list[i].id !== rid) newList.push(list[i]);
-  }
-  saveRecords(newList);
-  renderTable();
-}
-
-function clearAttendanceForm() {
-  document.getElementById("student_select").value = "";
-  document.getElementById("student_id").value = "";
-  document.getElementById("student_name").value = "";
-  document.getElementById("student_class").value = "";
-  document.getElementById("status").value = "";
-  document.getElementById("date").value = getToday();
-}
-
-function isFullName(name) {
-  var parts = name.trim().split(/\s+/).filter(Boolean);
-  return parts.length >= 2 && parts.every(function(p) { return p.length >= 2; });
-}
-
-function showMsg(text, isErr) {
-  var el = document.getElementById("reg-msg");
-  el.textContent = text;
-  el.className = "msg " + (isErr ? "msg-err" : "msg-ok");
-}
-
-function renderStudents() {
-  var list = loadStudents();
-  var body = document.getElementById("students-body");
-  var empty = document.getElementById("no-students");
-  body.innerHTML = "";
-  if (list.length === 0) {
-    empty.style.display = "block";
-    return;
-  }
-  empty.style.display = "none";
-  list.forEach(function(s) {
-    var tr = document.createElement("tr");
-    tr.innerHTML =
-      "<td>" + s.student_id + "</td>" +
-      "<td>" + s.name + "</td>" +
-      "<td>" + s.class + "</td>" +
-      "<td><button class='delete-btn' data-id='" + s.id + "'>Delete</button></td>";
-    body.appendChild(tr);
+  return students.filter(s=>{
+    const name=(s.firstName+' '+s.lastName).toLowerCase();
+    const matchQ=!q||name.includes(q)||s.studentId.toLowerCase().includes(q)||
+      s.email.toLowerCase().includes(q)||(s.department||'').toLowerCase().includes(q)||
+      (s.phone||'').includes(q);
+    const matchDept=!dept||s.department===dept;
+    const matchGender=!gender||s.gender===gender;
+    return matchQ&&matchDept&&matchGender;
   });
 }
 
-function switchTab(tab) {
-  var att = document.getElementById("attendance-section");
-  var reg = document.getElementById("register-section");
-  var btnAtt = document.getElementById("tab-attendance");
-  var btnReg = document.getElementById("tab-register");
-  if (tab === "attendance") {
-    att.style.display = "block";
-    reg.style.display = "none";
-    btnAtt.classList.add("active");
-    btnReg.classList.remove("active");
+function getSorted(list){
+  return [...list].sort((a,b)=>{
+    let av,bv;
+    if(sortKey==='name'){av=(a.firstName+' '+a.lastName).toLowerCase();bv=(b.firstName+' '+b.lastName).toLowerCase();}
+    else{av=(a[sortKey]||'').toLowerCase();bv=(b[sortKey]||'').toLowerCase();}
+    if(av<bv)return sortAsc?-1:1;
+    if(av>bv)return sortAsc?1:-1;
+    return 0;
+  });
+}
+
+// ── RENDER ──
+function render(){
+  const filtered=getFiltered();
+  const sorted=getSorted(filtered);
+  const total=sorted.length;
+  const pages=Math.max(1,Math.ceil(total/PER_PAGE));
+  if(currentPage>pages)currentPage=1;
+  const start=(currentPage-1)*PER_PAGE;
+  const pageData=sorted.slice(start,start+PER_PAGE);
+  const q=document.getElementById('searchInput').value.trim();
+
+  const tbody=document.getElementById('tableBody');
+  const empty=document.getElementById('emptyState');
+  const tbl=document.getElementById('studentTable');
+
+  if(total===0){
+    tbl.style.display='none';empty.style.display='';
+  }else{
+    tbl.style.display='';empty.style.display='none';
+    tbody.innerHTML=pageData.map(s=>rowHTML(s,q)).join('');
+  }
+
+  document.getElementById('tableCount').textContent=total;
+  document.getElementById('pageInfo').textContent=
+    total?`Showing ${start+1}–${Math.min(start+PER_PAGE,total)} of ${total}`:'No results';
+
+  renderPagination(pages);
+  updateStats();
+}
+
+function highlight(text,q){
+  if(!q)return text;
+  const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+  return String(text).replace(re,'<mark>$1</mark>');
+}
+
+function rowHTML(s,q){
+  const [bg,fg]=avatarColor(s.firstName+s.lastName);
+  const name=s.firstName+' '+s.lastName;
+
+  const genderClass={Male:'blue',Female:'teal',Other:'yellow'}[s.gender]||'blue';
+  return `<tr>
+    <td>
+      <div class="student-cell">
+        <div class="avatar" style="background:${bg};color:${fg}">${initials(s.firstName,s.lastName)}</div>
+        <div>
+          <div class="student-name">${highlight(name,q)}</div>
+          <div class="student-id">${highlight(s.email,q)}</div>
+        </div>
+      </div>
+    </td>
+    <td><code style="font-size:0.8rem;color:var(--muted2)">${highlight(s.studentId,q)}</code></td>
+    <td><span class="badge badge-blue">${highlight(s.department||'—',q)}</span></td>
+    <td style="color:var(--muted2)">${s.year||'—'}</td>
+    <td><span class="badge badge-${genderClass}">${s.gender||'—'}</span></td>
+    <td>
+      <div class="actions-cell">
+        <button class="btn btn-outline btn-sm" onclick="viewStudent('${s.id}')">👁</button>
+        <button class="btn btn-outline btn-sm" onclick="editStudent('${s.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="askDelete('${s.id}')">🗑</button>
+      </div>
+    </td>
+  </tr>`;
+}
+
+function renderPagination(pages){
+  const c=document.getElementById('pageBtns');
+  if(pages<=1){c.innerHTML='';return;}
+  let html=`<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+  for(let i=1;i<=pages;i++){
+    html+=`<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  html+=`<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===pages?'disabled':''}>›</button>`;
+  c.innerHTML=html;
+}
+
+function goPage(p){
+  const pages=Math.ceil(getFiltered().length/PER_PAGE);
+  if(p<1||p>pages)return;
+  currentPage=p;render();
+}
+
+function updateStats(){
+  const now=new Date();const mo=now.getMonth();const yr=now.getFullYear();
+  document.getElementById('hTotal').textContent=students.length;
+  document.getElementById('hMale').textContent=students.filter(s=>s.gender==='Male').length;
+  document.getElementById('hFemale').textContent=students.filter(s=>s.gender==='Female').length;
+  document.getElementById('scTotal').textContent=students.length;
+  document.getElementById('scDepts').textContent=new Set(students.map(s=>s.department).filter(Boolean)).size;
+  document.getElementById('scNew').textContent=students.filter(s=>{
+    const d=new Date(s.createdAt);return d.getMonth()===mo&&d.getFullYear()===yr;
+  }).length;
+}
+
+// ── FORM ──
+document.getElementById('studentForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  if(!validate())return;
+
+  const data={
+    id:editingId||crypto.randomUUID(),
+    firstName:v('firstName'),lastName:v('lastName'),
+    studentId:v('studentId'),email:v('email'),phone:v('phone'),
+    gender:v('gender'),dob:v('dob'),department:v('department'),
+    year:v('year'),address:v('address'),
+    createdAt:editingId?(students.find(s=>s.id===editingId)?.createdAt||new Date().toISOString()):new Date().toISOString(),
+    updatedAt:new Date().toISOString(),
+  };
+
+  if(editingId){
+    const idx=students.findIndex(s=>s.id===editingId);
+    students[idx]=data;
+    toast('✅ Student record updated successfully','success');
+    cancelEdit();
+  }else{
+    students.unshift(data);
+    toast('🎉 Student registered successfully','success');
+    document.getElementById('studentForm').reset();
+  }
+
+  save();render();
+});
+
+function v(id){return document.getElementById(id).value.trim();}
+
+function validate(){
+  let ok=true;
+  const required=['firstName','lastName','studentId','email','gender','department','year'];
+  required.forEach(id=>{
+    const el=document.getElementById(id);
+    const hint=document.getElementById('err-'+id);
+    if(!el.value.trim()){
+      el.classList.add('input-error');if(hint)hint.classList.add('show');ok=false;
+    }else{el.classList.remove('input-error');if(hint)hint.classList.remove('show');}
+  });
+  // email check
+  const em=document.getElementById('email');
+  if(em.value&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value)){
+    em.classList.add('input-error');
+    document.getElementById('err-email').classList.add('show');ok=false;
+  }
+  // unique studentId
+  const sid=v('studentId');
+  const dup=students.find(s=>s.studentId===sid&&s.id!==editingId);
+  if(sid&&dup){
+    document.getElementById('studentId').classList.add('input-error');
+    document.getElementById('err-studentId').textContent='This ID already exists';
+    document.getElementById('err-studentId').classList.add('show');ok=false;
+  }
+  return ok;
+}
+
+// clear errors on input
+['firstName','lastName','studentId','email','gender','department','year'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('input',()=>{
+    document.getElementById(id).classList.remove('input-error');
+    document.getElementById('err-'+id)?.classList.remove('show');
+  });
+});
+
+// ── EDIT ──
+function editStudent(id){
+  const s=students.find(x=>x.id===id);if(!s)return;
+  editingId=id;
+  ['firstName','lastName','studentId','email','phone','gender','dob','department','year','address']
+    .forEach(f=>{ const el=document.getElementById(f); if(el)el.value=s[f]||''; });
+  document.getElementById('editId').value=id;
+  document.getElementById('formTitle').textContent='Edit Student';
+  document.getElementById('formSub').textContent='Modify the student information below.';
+  document.getElementById('submitBtn').textContent='💾 Save Changes';
+  document.getElementById('submitBtn').className='btn btn-success btn-full';
+  document.getElementById('cancelBtn').style.display='';
+  document.getElementById('editBanner').classList.add('show');
+  document.querySelector('.panel').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function cancelEdit(){
+  editingId=null;
+  document.getElementById('studentForm').reset();
+  document.getElementById('editId').value='';
+  document.getElementById('formTitle').textContent='Add New Student';
+  document.getElementById('formSub').textContent='Fill in all required fields to register a student.';
+  document.getElementById('submitBtn').textContent='➕ Register Student';
+  document.getElementById('submitBtn').className='btn btn-primary btn-full';
+  document.getElementById('cancelBtn').style.display='none';
+  document.getElementById('editBanner').classList.remove('show');
+  document.querySelectorAll('.input-error').forEach(el=>el.classList.remove('input-error'));
+  document.querySelectorAll('.field-hint.show').forEach(el=>el.classList.remove('show'));
+}
+
+// ── VIEW ──
+function viewStudent(id){
+  const s=students.find(x=>x.id===id);if(!s)return;
+  const [bg,fg]=avatarColor(s.firstName+s.lastName);
+  const age=s.dob?Math.floor((Date.now()-new Date(s.dob))/(365.25*24*3600*1000))+'y':'—';
+  const info=`
+👤 ${s.firstName} ${s.lastName}
+🆔 ${s.studentId}
+📧 ${s.email}
+📞 ${s.phone||'—'}
+⚥  ${s.gender} · 🎂 ${age}
+🏫 ${s.department} — ${s.year}
+📍 ${s.address||'—'}
+📅 Registered: ${new Date(s.createdAt).toLocaleDateString()}`;
+  toast('ℹ️ '+s.firstName+' '+s.lastName+' — '+s.department,'info');
+}
+
+// ── DELETE ──
+function askDelete(id){
+  const s=students.find(x=>x.id===id);if(!s)return;
+  deleteTargetId=id;
+  document.getElementById('deleteTarget').textContent=
+    `${s.firstName} ${s.lastName} · ${s.studentId} · ${s.department}`;
+  document.getElementById('deleteModal').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('deleteModal').classList.remove('open');
+  deleteTargetId=null;
+}
+function confirmDelete(){
+  students=students.filter(s=>s.id!==deleteTargetId);
+  save();render();closeModal();
+  toast('🗑️ Student record deleted','error');
+}
+
+// ── SORT ──
+function sortBy(key){
+  if(sortKey===key)sortAsc=!sortAsc;else{sortKey=key;sortAsc=true;}
+  document.querySelectorAll('thead th').forEach(th=>{th.classList.remove('sorted');});
+  event.currentTarget.classList.add('sorted');
+  event.currentTarget.querySelector('.sort-arrow').textContent=sortAsc?'↑':'↓';
+  currentPage=1;render();
+}
+
+// ── VIEW TOGGLE ──
+function toggleView(mode){
+  viewMode=mode;
+  document.getElementById('viewTable').classList.toggle('active',mode==='table');
+  document.getElementById('viewGrid').classList.toggle('active',mode==='grid');
+  render();
+}
+
+// ── TOAST ──
+function toast(msg,type='info'){
+  const c=document.getElementById('toastContainer');
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;t.textContent=msg;
+  c.appendChild(t);
+  setTimeout(()=>t.remove(),3500);
+}
+
+function showSection(section){
+  document.getElementById('studentSection').style.display = section==='students' ? '' : 'none';
+  document.getElementById('attendanceSection').style.display = section==='attendance' ? '' : 'none';
+  document.getElementById('showStudentsBtn').classList.toggle('active', section==='students');
+  document.getElementById('showAttendanceBtn').classList.toggle('active', section==='attendance');
+}
+
+function getStudentById(studentId){
+  return students.find(s=>s.studentId.toLowerCase()===studentId.toLowerCase());
+}
+
+function updateAttendanceStudentName(){
+  if(!attendanceNameHint) return;
+  const studentId = attendanceStudentId.value.trim();
+  if(!studentId){attendanceNameHint.textContent=''; return;}
+  const student = getStudentById(studentId);
+  if(student){
+    attendanceNameHint.textContent = `Student: ${student.firstName} ${student.lastName}`;
+    attendanceNameHint.style.color = 'var(--muted2)';
   } else {
-    att.style.display = "none";
-    reg.style.display = "block";
-    btnReg.classList.add("active");
-    btnAtt.classList.remove("active");
+    attendanceNameHint.textContent = 'Student not found in registry';
+    attendanceNameHint.style.color = 'var(--red)';
   }
 }
 
-function removeStudent(id) {
-  var list = loadStudents().filter(function(s) { return s.id !== id; });
-  saveStudents(list);
-  renderStudents();
-  loadDropdown();
+function setAttendanceMode(index=null){
+  attendanceEditIndex = index;
+  if(attendanceSubmitBtn){
+    attendanceSubmitBtn.textContent = index!==null ? 'Update Attendance' : 'Save Attendance';
+  }
 }
 
-function registerStudent() {
-  var id = document.getElementById("reg_id").value.trim();
-  var name = document.getElementById("reg_name").value.trim();
-  var cls = document.getElementById("reg_class").value.trim();
-
-  if (!id || !name || !cls) {
-    showMsg("All fields are required.", true);
-    return;
-  }
-  if (!isFullName(name)) {
-    showMsg("Full name must have at least 2 words.", true);
-    return;
-  }
-
-  var list = loadStudents();
-  if (list.some(function(s) { return s.student_id === id; })) {
-    showMsg("Student ID already exists.", true);
-    return;
-  }
-
-  list.push({ id: Date.now(), student_id: id, name: name, class: cls });
-  saveStudents(list);
-  renderStudents();
-  loadDropdown();
-  showMsg("Student registered successfully.", false);
-  document.getElementById("reg_id").value = "";
-  document.getElementById("reg_name").value = "";
-  document.getElementById("reg_class").value = "";
+function getFilteredAttendanceRecords(){
+  const search = attendanceSearch?.value.trim().toLowerCase() || '';
+  const date = attendanceFilterDate?.value || '';
+  const status = attendanceFilterStatus?.value || '';
+  const idFilter = attendanceFilterId?.value.trim().toLowerCase() || '';
+  return attendanceRecords.filter(record => {
+    const student = getStudentById(record.studentId);
+    const studentName = student ? `${student.firstName} ${student.lastName}`.toLowerCase() : '';
+    const matchesSearch = !search || studentName.includes(search) || record.studentId.toLowerCase().includes(search);
+    const matchesDate = !date || record.date === date;
+    const matchesStatus = !status || record.status === status;
+    const matchesId = !idFilter || record.studentId.toLowerCase().includes(idFilter);
+    return matchesSearch && matchesDate && matchesStatus && matchesId;
+  });
 }
 
-document.getElementById("tab-attendance").addEventListener("click", function() { switchTab("attendance"); });
-document.getElementById("tab-register").addEventListener("click", function() { switchTab("register"); });
-document.getElementById("btn-reg-save").addEventListener("click", registerStudent);
-document.getElementById("btn-reg-cancel").addEventListener("click", function() {
-  document.getElementById("reg_id").value = "";
-  document.getElementById("reg_name").value = "";
-  document.getElementById("reg_class").value = "";
-  document.getElementById("reg-msg").className = "msg";
+function saveAttendance(){
+  localStorage.setItem('attendanceRecords', JSON.stringify(attendanceRecords));
+}
+
+function renderAttendance(){
+  const filteredRecords = attendanceRecords
+    .map((record, idx)=>({record, idx}))
+    .filter(({record}) => {
+      const search = attendanceSearch?.value.trim().toLowerCase() || '';
+      const date = attendanceFilterDate?.value || '';
+      const status = attendanceFilterStatus?.value || '';
+      const idFilter = attendanceFilterId?.value.trim().toLowerCase() || '';
+      const student = getStudentById(record.studentId);
+      const studentName = student ? `${student.firstName} ${student.lastName}`.toLowerCase() : '';
+      const matchesSearch = !search || studentName.includes(search) || record.studentId.toLowerCase().includes(search);
+      const matchesDate = !date || record.date === date;
+      const matchesStatus = !status || record.status === status;
+      const matchesId = !idFilter || record.studentId.toLowerCase().includes(idFilter);
+      return matchesSearch && matchesDate && matchesStatus && matchesId;
+    });
+  attendanceBody.innerHTML = filteredRecords.map(({record, idx}) => {
+    const student = getStudentById(record.studentId);
+    const studentName = student ? `${student.firstName} ${student.lastName}` : 'Unknown student';
+    return `<tr>
+      <td>${record.date}</td>
+      <td>${studentName}</td>
+      <td><code style="font-size:0.8rem;color:var(--muted2)">${record.studentId}</code></td>
+      <td><span class="status-badge ${record.status.toLowerCase()}">${record.status}</span></td>
+      <td>
+        <button class="action-btn" onclick="editAttendance(${idx})">Edit</button>
+        <button class="action-btn" onclick="deleteRecord(${idx})">Delete</button>
+      </td>
+    </tr>`;
+  }).join('');
+  recordCount.textContent = filteredRecords.length;
+  attendanceCount.textContent = filteredRecords.length;
+  presentCount.textContent = filteredRecords.filter(({record})=>record.status==='Present').length;
+  absentCount.textContent = filteredRecords.filter(({record})=>record.status==='Absent').length;
+  lateCount.textContent = filteredRecords.filter(({record})=>record.status==='Late').length;
+  lastSaved.textContent = filteredRecords.length ? filteredRecords[0].record.savedAt : '—';
+}
+
+function addAttendance(){
+  const date = attendanceDate.value;
+  const studentId = attendanceStudentId.value.trim();
+  const status = attendanceStatus.value;
+  if(!date || !studentId){
+    toast('Please enter both date and student ID.','error');
+    return;
+  }
+  const record = {date, studentId, status, savedAt: new Date().toLocaleString()};
+  if(attendanceEditIndex !== null){
+    attendanceRecords[attendanceEditIndex] = record;
+    toast('✅ Attendance updated','success');
+    setAttendanceMode(null);
+  } else {
+    attendanceRecords.unshift(record);
+    toast('✅ Attendance saved','success');
+  }
+  saveAttendance();
+  renderAttendance();
+  attendanceForm.reset();
+  const today = new Date().toISOString().slice(0,10);
+  attendanceDate.value = today;
+  attendanceNameHint.textContent = '';
+}
+
+function editAttendance(index){
+  const record = attendanceRecords[index];
+  if(!record) return;
+  attendanceDate.value = record.date;
+  attendanceStudentId.value = record.studentId;
+  attendanceStatus.value = record.status;
+  updateAttendanceStudentName();
+  setAttendanceMode(index);
+  document.querySelector('#attendanceSection .panel')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function deleteRecord(index){
+  if(!confirm('Delete this attendance record?')) return;
+  attendanceRecords.splice(index,1);
+  saveAttendance();
+  renderAttendance();
+  toast('🗑️ Attendance record deleted','error');
+}
+
+// ── STORAGE ──
+function save(){localStorage.setItem('eduStudents',JSON.stringify(students));}
+
+// ── LIVE SEARCH ──
+document.getElementById('searchInput').addEventListener('input',()=>{currentPage=1;render();});
+document.getElementById('filterDept').addEventListener('change',()=>{currentPage=1;render();});
+document.getElementById('filterGender').addEventListener('change',()=>{currentPage=1;render();});
+
+// ── CLICK OUTSIDE MODAL ──
+document.getElementById('deleteModal').addEventListener('click',e=>{
+  if(e.target===e.currentTarget)closeModal();
 });
-document.getElementById("students-body").addEventListener("click", function(e) {
-  if (!e.target.classList.contains("delete-btn")) return;
-  if (!confirm("Delete this student?")) return;
-  removeStudent(Number(e.target.dataset.id));
-  showMsg("Student deleted.", false);
-});
 
-document.getElementById("date").value = getToday();
-loadDropdown();
-renderStudents();
-renderTable();
-window.onfocus = loadDropdown;
+// ── SEED DATA ──
+if(students.length===0){
+  const seed=[
+    {firstName:'Ahmed',lastName:'Mohamed',studentId:'STU-2024-001',email:'ahmed.m@univ.edu',phone:'+252 63 4111111',gender:'Male',dob:'2002-05-14',department:'Computer Science',year:'Year 2',status:'Active',address:'Hargeisa, 26 June District'},
+    {firstName:'Faadumo',lastName:'Cabdi',studentId:'STU-2024-002',email:'faadumo.c@univ.edu',phone:'+252 63 4222222',gender:'Female',dob:'2001-09-22',department:'Medicine',year:'Year 3',status:'Active',address:'Hargeisa, Sha\'ab District'},
+    {firstName:'Omar',lastName:'Hassan',studentId:'STU-2024-003',email:'omar.h@univ.edu',phone:'+252 63 4333333',gender:'Male',dob:'2003-01-08',department:'Engineering',year:'Year 1',status:'Active',address:'Berbera'},
+    {firstName:'Hodan',lastName:'Ali',studentId:'STU-2024-004',email:'hodan.a@univ.edu',phone:'+252 63 4444444',gender:'Female',dob:'2000-11-30',department:'Business',year:'Year 4',status:'Active',address:'Hargeisa, Goljano'},
+    {firstName:'Abdi',lastName:'Warsame',studentId:'STU-2023-020',email:'abdi.w@univ.edu',phone:'+252 63 4555555',gender:'Male',dob:'1999-07-17',department:'Law',year:'Postgraduate',status:'Graduated',address:'Burao'},
+    {firstName:'Sahra',lastName:'Ismail',studentId:'STU-2024-005',email:'sahra.i@univ.edu',phone:'',gender:'Female',dob:'2002-03-25',department:'Arts & Humanities',year:'Year 2',status:'Active',address:'Hargeisa'},
+    {firstName:'Mustafe',lastName:'Dahir',studentId:'STU-2024-006',email:'mustafe.d@univ.edu',phone:'+252 63 4666666',gender:'Male',dob:'2001-12-05',department:'Mathematics',year:'Year 3',status:'Inactive',address:'Las Anod'},
+  ].map(s=>({...s,id:crypto.randomUUID(),createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()}));
+  students=seed;save();
+}
+
+// ── INIT ──
+attendanceForm?.addEventListener('submit', e=>{e.preventDefault();addAttendance();});
+attendanceStudentId?.addEventListener('input', updateAttendanceStudentName);
+attendanceSearch?.addEventListener('input', renderAttendance);
+attendanceFilterDate?.addEventListener('change', renderAttendance);
+attendanceFilterStatus?.addEventListener('change', renderAttendance);
+attendanceFilterId?.addEventListener('input', renderAttendance);
+if(attendanceDate && !attendanceDate.value){attendanceDate.value = new Date().toISOString().slice(0,10);}
+showSection('students');
+renderAttendance();
+render();
 </script>
 </body>
 </html>
